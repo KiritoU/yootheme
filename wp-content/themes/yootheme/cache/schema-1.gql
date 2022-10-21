@@ -1,0 +1,289 @@
+directive @bind(id: String, class: String, args: String) on OBJECT | ENUM_VALUE | FIELD_DEFINITION
+
+directive @call(func: String, args: String) on ENUM_VALUE | FIELD_DEFINITION
+
+directive @slice(offset: Int, limit: Int) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+type Attachment {
+  url: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\AttachmentType::url")
+  alt: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\AttachmentType::alt")
+  caption: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\AttachmentType::caption")
+}
+
+type CategoriesQuery {
+  taxonomyCategory: Category @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyArchiveQueryType::resolve")
+  categoryPost(offset: Int, limit: Int): [Post] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyArchiveQueryType::resolvePosts")
+  customCategory(id: Int): Category @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomTaxonomyQueryType::resolveTerm")
+  customCategories(id: Int, offset: Int, limit: Int, order: String, order_direction: String): [Category] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomTaxonomyQueryType::resolveTerms", args: "{\"taxonomy\":\"category\"}")
+}
+
+type Category {
+  name: String
+  description: String
+  link: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyType::resolveLink")
+  count: String
+  parent: Category @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyType::resolveParent", args: "{\"taxonomy\":\"category\"}")
+  children(order: String, order_direction: String): [Category] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyType::resolveChildren", args: "{\"taxonomy\":\"category\"}")
+  field: CategoryFields @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::field")
+}
+
+type CategoryFields {
+  cate_image: Attachment @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"cate_image\"}")
+  cate_content_show_before: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"cate_content_show_before\"}")
+  cate_content: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"cate_content\"}")
+  cate_content_show_after: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"cate_content_show_after\"}")
+  cate_content_after: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"cate_content_after\"}")
+}
+
+type Chap {
+  title: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::title")
+  content(show_intro_text: Boolean): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::content")
+  teaser(show_excerpt: Boolean): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::teaser")
+  date: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::date")
+  modified: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::modified")
+  commentCount: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::commentCount")
+  metaString(format: String, separator: String, link_style: String, show_publish_date: Boolean, show_author: Boolean, show_comments: Boolean, show_taxonomy: String, date_format: String): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::metaString")
+  featuredImage: Attachment @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::featuredImage")
+  link: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::link")
+  releases: [Release] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTerms", args: "{\"taxonomy\":\"release\"}")
+  releaseString(separator: String, show_link: Boolean, link_style: String): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTermString", args: "{\"taxonomy\":\"release\"}")
+  countrys: [Country] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTerms", args: "{\"taxonomy\":\"country\"}")
+  countryString(separator: String, show_link: Boolean, link_style: String): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTermString", args: "{\"taxonomy\":\"country\"}")
+  genress: [Genres] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTerms", args: "{\"taxonomy\":\"genres\"}")
+  genresString(separator: String, show_link: Boolean, link_style: String): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTermString", args: "{\"taxonomy\":\"genres\"}")
+  relatedChaps(release: String, country: String, genres: String, author: String, offset: Int, limit: Int, order: String, order_direction: String, order_alphanum: Boolean): [Chap] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::relatedPosts")
+  field: ChapFields @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::field")
+}
+
+type ChapFields {
+  video_link: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"video_link\"}")
+  chat_luong_video: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"chat_luong_video\"}")
+  country: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"country\"}")
+  released: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"released\"}")
+  trailer: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"trailer\"}")
+  genre: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"genre\"}")
+  film_type: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"film_type\"}")
+}
+
+type ChapsQuery {
+  singleChap: Chap @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\SinglePostQueryType::resolve")
+  singlePreviousChap(taxonomy: String): Chap @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\SinglePostQueryType::resolvePreviousPost")
+  singleNextChap(taxonomy: String): Chap @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\SinglePostQueryType::resolveNextPost")
+  customChap(id: Int, terms: [Int], users: [Int], users_operator: String, offset: Int, order: String, order_direction: String, order_alphanum: Boolean, country_operator: String, genres_operator: String, release_operator: String): Chap @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomPostQueryType::resolvePost", args: "{\"post_type\":\"chap\"}")
+  customChaps(terms: [Int], users: [Int], users_operator: String, offset: Int, limit: Int, order: String, order_direction: String, order_alphanum: Boolean, country_operator: String, genres_operator: String, release_operator: String): [Chap] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomPostQueryType::resolvePosts", args: "{\"post_type\":\"chap\"}")
+  archiveChap(offset: Int, limit: Int): [Chap] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostArchiveQueryType::resolve")
+}
+
+type Country {
+  name: String
+  description: String
+  link: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyType::resolveLink")
+  count: String
+}
+
+type CountrysQuery {
+  taxonomyCountry: Country @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyArchiveQueryType::resolve")
+  countryPost(offset: Int, limit: Int): [Post] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyArchiveQueryType::resolvePosts")
+  countryChap(offset: Int, limit: Int): [Chap] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyArchiveQueryType::resolvePosts")
+  customCountry(id: Int): Country @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomTaxonomyQueryType::resolveTerm")
+  customCountrys(id: Int, offset: Int, limit: Int, order: String, order_direction: String): [Country] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomTaxonomyQueryType::resolveTerms", args: "{\"taxonomy\":\"country\"}")
+}
+
+type Date {
+  date: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\DateType::date")
+}
+
+type File {
+  name(title_case: Boolean): String @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FileType::name")
+  basename: String @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FileType::basename")
+  dirname: String @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FileType::dirname")
+  url: String @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FileType::url")
+  path: String @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FileType::path")
+  content: String @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FileType::content")
+  size: String @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FileType::size")
+  extension: String @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FileType::extension")
+  mimetype: String @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FileType::mimetype")
+  accessed: String @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FileType::accessed")
+  changed: String @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FileType::changed")
+  modified: String @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FileType::modified")
+}
+
+type Genres {
+  name: String
+  description: String
+  link: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyType::resolveLink")
+  count: String
+}
+
+type GenressQuery {
+  taxonomyGenres: Genres @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyArchiveQueryType::resolve")
+  genresPost(offset: Int, limit: Int): [Post] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyArchiveQueryType::resolvePosts")
+  genresChap(offset: Int, limit: Int): [Chap] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyArchiveQueryType::resolvePosts")
+  customGenres(id: Int): Genres @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomTaxonomyQueryType::resolveTerm")
+  customGenress(id: Int, offset: Int, limit: Int, order: String, order_direction: String): [Genres] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomTaxonomyQueryType::resolveTerms", args: "{\"taxonomy\":\"genres\"}")
+}
+
+type MenuItem {
+  title: String
+  image: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\MenuItemType::data")
+  icon: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\MenuItemType::data")
+  subtitle: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\MenuItemType::data")
+  url: String
+  active: Boolean
+  type: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\MenuItemType::type")
+}
+
+scalar Object
+
+type Page {
+  title: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::title")
+  content(show_intro_text: Boolean): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::content")
+  teaser(show_excerpt: Boolean): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::teaser")
+  date: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::date")
+  modified: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::modified")
+  commentCount: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::commentCount")
+  metaString(format: String, separator: String, link_style: String, show_publish_date: Boolean, show_author: Boolean, show_comments: Boolean, show_taxonomy: String, date_format: String): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::metaString")
+  featuredImage: Attachment @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::featuredImage")
+  link: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::link")
+  author: User @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::author")
+  relatedPages(author: String, offset: Int, limit: Int, order: String, order_direction: String, order_alphanum: Boolean): [Page] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::relatedPosts")
+}
+
+type PagesQuery {
+  singlePage: Page @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\SinglePostQueryType::resolve")
+  singlePreviousPage: Page @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\SinglePostQueryType::resolvePreviousPost")
+  singleNextPage: Page @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\SinglePostQueryType::resolveNextPost")
+  customPage(id: Int, terms: [Int], users: [Int], users_operator: String, offset: Int, order: String, order_direction: String, order_alphanum: Boolean): Page @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomPostQueryType::resolvePost", args: "{\"post_type\":\"page\"}")
+  customPages(terms: [Int], users: [Int], users_operator: String, offset: Int, limit: Int, order: String, order_direction: String, order_alphanum: Boolean): [Page] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomPostQueryType::resolvePosts", args: "{\"post_type\":\"page\"}")
+}
+
+type Post {
+  title: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::title")
+  content(show_intro_text: Boolean): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::content")
+  teaser(show_excerpt: Boolean): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::teaser")
+  excerpt: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::excerpt")
+  date: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::date")
+  modified: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::modified")
+  commentCount: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::commentCount")
+  metaString(format: String, separator: String, link_style: String, show_publish_date: Boolean, show_author: Boolean, show_comments: Boolean, show_taxonomy: String, date_format: String): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::metaString")
+  featuredImage: Attachment @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::featuredImage")
+  link: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::link")
+  author: User @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::author")
+  categories: [Category] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTerms", args: "{\"taxonomy\":\"category\"}")
+  categoryString(separator: String, show_link: Boolean, link_style: String): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTermString", args: "{\"taxonomy\":\"category\"}")
+  tags: [PostTag] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTerms", args: "{\"taxonomy\":\"post_tag\"}")
+  post_tagString(separator: String, show_link: Boolean, link_style: String): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTermString", args: "{\"taxonomy\":\"post_tag\"}")
+  releases: [Release] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTerms", args: "{\"taxonomy\":\"release\"}")
+  releaseString(separator: String, show_link: Boolean, link_style: String): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTermString", args: "{\"taxonomy\":\"release\"}")
+  countrys: [Country] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTerms", args: "{\"taxonomy\":\"country\"}")
+  countryString(separator: String, show_link: Boolean, link_style: String): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTermString", args: "{\"taxonomy\":\"country\"}")
+  genress: [Genres] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTerms", args: "{\"taxonomy\":\"genres\"}")
+  genresString(separator: String, show_link: Boolean, link_style: String): String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::resolveTermString", args: "{\"taxonomy\":\"genres\"}")
+  relatedPosts(category: String, post_tag: String, release: String, country: String, genres: String, author: String, offset: Int, limit: Int, order: String, order_direction: String, order_alphanum: Boolean): [Post] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostType::relatedPosts")
+  field: PostFields @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::field")
+}
+
+type PostFields {
+  post_question_1: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"post_question_1\"}")
+  post_answer_1: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"post_answer_1\"}")
+  post_question_2: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"post_question_2\"}")
+  post_answer_2: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"post_answer_2\"}")
+  post_question_3: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"post_question_3\"}")
+  post_answer_3: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"post_answer_3\"}")
+  post_question_4: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"post_question_4\"}")
+  post_answer_4: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"post_answer_4\"}")
+  post_question_5: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"post_question_5\"}")
+  post_answer_5: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"post_answer_5\"}")
+  video_link: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"video_link\"}")
+  chat_luong_video: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"chat_luong_video\"}")
+  country: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"country\"}")
+  released: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"released\"}")
+  trailer: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"trailer\"}")
+  genre: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"genre\"}")
+  film_type: String @call(func: "YOOtheme\\Builder\\Wordpress\\Acf\\Type\\FieldsType::resolve", args: "{\"field\":\"film_type\"}")
+}
+
+type PostTag {
+  name: String
+  description: String
+  link: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyType::resolveLink")
+  count: String
+}
+
+type PostsQuery {
+  singlePost: Post @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\SinglePostQueryType::resolve")
+  singlePreviousPost(taxonomy: String): Post @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\SinglePostQueryType::resolvePreviousPost")
+  singleNextPost(taxonomy: String): Post @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\SinglePostQueryType::resolveNextPost")
+  customPost(id: Int, terms: [Int], users: [Int], users_operator: String, offset: Int, order: String, order_direction: String, order_alphanum: Boolean, category_operator: String, country_operator: String, genres_operator: String, post_tag_operator: String, release_operator: String): Post @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomPostQueryType::resolvePost", args: "{\"post_type\":\"post\"}")
+  customPosts(terms: [Int], users: [Int], users_operator: String, offset: Int, limit: Int, order: String, order_direction: String, order_alphanum: Boolean, category_operator: String, country_operator: String, genres_operator: String, post_tag_operator: String, release_operator: String): [Post] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomPostQueryType::resolvePosts", args: "{\"post_type\":\"post\"}")
+  archivePost(offset: Int, limit: Int): [Post] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostArchiveQueryType::resolve")
+}
+
+type Query {
+  date: Date @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\DateQueryType::resolve")
+  authorArchive: User @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\UserQueryType::resolve")
+  site: Site @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\SiteQueryType::resolve")
+  search: Search @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\SearchQueryType::resolve")
+  posts: PostsQuery @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostQueryType::resolve")
+  pages: PagesQuery @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostQueryType::resolve")
+  chaps: ChapsQuery @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\PostQueryType::resolve")
+  categories: CategoriesQuery @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyQueryType::resolve")
+  tags: TagsQuery @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyQueryType::resolve")
+  releases: ReleasesQuery @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyQueryType::resolve")
+  countrys: CountrysQuery @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyQueryType::resolve")
+  genress: GenressQuery @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyQueryType::resolve")
+  customMenuItems(id: Int, parent: String, heading: String, include_heading: Boolean = true, ids: [String]): [MenuItem] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomMenuItemsQueryType::resolve")
+  customUser(id: Int): User @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomUserQueryType::resolveUser")
+  customUsers(roles: [String], offset: Int, limit: Int, order: String, order_direction: String): [User] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomUserQueryType::resolveUsers")
+  file(pattern: String, offset: Int, order: String, order_direction: String): File @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FileQueryType::resolve")
+  files(pattern: String, offset: Int, limit: Int, order: String, order_direction: String): [File] @call(func: "YOOtheme\\Builder\\Source\\Filesystem\\Type\\FilesQueryType::resolve")
+}
+
+type Release {
+  name: String
+  description: String
+  link: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyType::resolveLink")
+  count: String
+}
+
+type ReleasesQuery {
+  taxonomyRelease: Release @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyArchiveQueryType::resolve")
+  releasePost(offset: Int, limit: Int): [Post] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyArchiveQueryType::resolvePosts")
+  releaseChap(offset: Int, limit: Int): [Chap] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyArchiveQueryType::resolvePosts")
+  customRelease(id: Int): Release @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomTaxonomyQueryType::resolveTerm")
+  customReleases(id: Int, offset: Int, limit: Int, order: String, order_direction: String): [Release] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomTaxonomyQueryType::resolveTerms", args: "{\"taxonomy\":\"release\"}")
+}
+
+type Search {
+  searchword: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\SearchType::searchQuery")
+  total: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\SearchType::foundPosts")
+}
+
+type Site {
+  title: String
+  page_title: String
+  user: User
+  is_guest: Int
+  item_count: Int
+}
+
+type TagsQuery {
+  taxonomyPostTag: PostTag @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyArchiveQueryType::resolve")
+  postTagPost(offset: Int, limit: Int): [Post] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\TaxonomyArchiveQueryType::resolvePosts")
+  customPostTag(id: Int): PostTag @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomTaxonomyQueryType::resolveTerm")
+  customTags(id: Int, offset: Int, limit: Int, order: String, order_direction: String): [PostTag] @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\CustomTaxonomyQueryType::resolveTerms", args: "{\"taxonomy\":\"post_tag\"}")
+}
+
+type User {
+  name: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\UserType::name")
+  nicename: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\UserType::nicename")
+  nickname: String
+  firstName: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\UserType::firstName")
+  lastName: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\UserType::lastName")
+  description: String
+  email: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\UserType::email")
+  registered: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\UserType::registered")
+  url: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\UserType::url")
+  link: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\UserType::link")
+  avatar: String @call(func: "YOOtheme\\Builder\\Wordpress\\Source\\Type\\UserType::avatar")
+}
