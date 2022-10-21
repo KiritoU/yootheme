@@ -1,0 +1,2 @@
+<?php return "/www/wwwroot/phottinder.com/wp-content/uploads/2022/06/fbsscover.png
+/www/wwwroot/phottinder.com/wp-content/uploads/2022/06/nho-trai-tren-tinder-mua-do-an-ho-co-gai-khong-ngo-bi-boc-phot-202202170826502091.html";
